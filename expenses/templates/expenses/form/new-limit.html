@@ -56,11 +56,8 @@
         
         $.ajax({
             type : "POST", 
-            url: "{% url 'expenses:create_expense' %}",
+            url: "{% url 'expenses:handle_limit' %}",
             data: {
-                category : $('#id_category').val(),
-                payment : $('#id_payment').val(),
-                description : $('#id_description').val(),
                 value : $('#id_value').val(),
                 date : $('#id_date').val(),
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
