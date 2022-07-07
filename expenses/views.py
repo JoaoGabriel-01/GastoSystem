@@ -208,8 +208,7 @@ def handle_category(request):
 def handle_limit(request):
   title = 'Inserir Limite'
   response = {
-    'title' : title,
-    'html' : 'a fazer...',
+  
     
   }
   return JsonResponse(response, status = 200)
