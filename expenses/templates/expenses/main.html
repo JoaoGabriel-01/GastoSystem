@@ -139,6 +139,12 @@
 
             $(".action-modal").on('click', function(){
                 //console.log($(this).data().action)
+                new_data = {}
+                if($(this).data().id){
+                    new_data = {
+                        id: $(this).data().id,
+                    }
+                }
                 
                 $.ajax({
                     type: 'GET',
