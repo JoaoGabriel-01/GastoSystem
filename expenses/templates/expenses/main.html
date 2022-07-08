@@ -135,20 +135,26 @@
                 'handle-limit': "{% url 'expenses:handle_limit' %}",
                 'handle-payment': "{% url 'expenses:handle_payment' %}",
                 'handle-category': "{% url 'expenses:handle_category' %}",
+                'edit-category': "{% url 'expenses:edit_expense' %}",
             }
-
             $(".action-modal").on('click', function(){
                 //console.log($(this).data().action)
                 new_data = {}
-                if($(this).data().id){
+                if($(this).data().action == 'edit-category'){
                     new_data = {
                         id: $(this).data().id,
                     }
                 }
-                
+
+                if($(this).data().action == 'handle-limit'){
+                    new_data = {
+                        month_year: $('#list_month_year :selected').val(),
+                    }
+                }
                 $.ajax({
                     type: 'GET',
                     url: action_modal[$(this).data().action],
+                    data: new_data,
                     success: function (response) {
                         $('.modal-description').text(response.title);
                         $('.modal-content').html(response.html);
