@@ -126,7 +126,8 @@ def list_expenses_by_category(request):
       context = {
         'form': form,
         'category_selected': category,
-        'list':list
+        'list':list,
+        'page_selected': "report",
       }
       return render(request,'expenses/list-expenses-by-category.html',context)
   form = SelectCategoryForm()
@@ -156,9 +157,7 @@ def get_total_expenses_ajax(request):
 
 from expenses.forms import ExpenseForm
 from django.template.loader import render_to_string
-from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt
 def create_expense(request):
   title = 'Inserir Gasto'
   context_extra = {}
@@ -194,7 +193,6 @@ def create_expense(request):
 
 from expenses.forms import CategoryForm
 
-@csrf_exempt
 def handle_category(request):
   title = "Inserir Categoria"
   context_extra = {}
@@ -229,26 +227,22 @@ def handle_category(request):
   }
   return JsonResponse(response, status = 200)
 
-
-@csrf_exempt
-
+from expenses.forms import LimitForm
+from expenses.models import Limit
 def handle_limit(request):
   title = 'Inserir Limite'
-  response = {
-    'title' : title,
-    'html' : 'a fazer...',
-    
-  }
-  return JsonResponse(response, status = 200)
 
-from expenses.forms import PaymentForm
-@csrf_exempt
-
-def handle_payment(request):
-  title = 'Inserir Pagamento'
+  
   context_extra = {}
   if request.POST.get('action') == 'post':
-    form = PaymentForm(request.POST)
+    
+    month, year = request.POST['month'], request.POST['year']
+ 
+    if Limit.objects.filter(month=month,year=year).exists():
+      instance = Limit.objects.get(month=month,year=year)
+      form = LimitForm(request.POST,instance=instance)
+    else:
+      form = LimitForm(request.POST)
     
     if form.is_valid():
       model = form.save(commit=False)
@@ -264,17 +258,32 @@ def handle_payment(request):
       }
    
   else:
-        form = PaymentForm()
+    value = request.GET['month_year']
+    value = value.split('-')
+    month, year = value[0], value[1]
+    total = 0
+    if Limit.objects.filter(month=month,year=year).exists():
+      total = Limit.objects.get(month=month,year=year).value
+    form = LimitForm(initial={'month': month, 'year': year, 'value': total})
   context = {
     'form': form,
-    'limits': Limit.objects.all(),
+  
   }
-  html_page = render_to_string('expenses/form/new-payment.html', context)
+  html_page = render_to_string('expenses/form/handle-limit.html', context)
   response = {
     'title' : title,
     'html' : html_page,
     'response' : context_extra['response'] if 'response' in context_extra else None,
     'error': context_extra['error'] if 'error' in context_extra else None,
+  }
+  return JsonResponse(response, status = 200)
+
+def handle_payment(request):
+  title = 'Inserir Forma de Pagamento'
+  response = {
+    'title' : title,
+    'html' : 'a fazer...',
+    
   }
   return JsonResponse(response, status = 200)
 

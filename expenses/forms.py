@@ -23,6 +23,16 @@ class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
         fields = ['description']
+
+from expenses.models import Limit
+
+class LimitForm(forms.ModelForm):
+    class Meta:
+        model = Limit
+        fields = '__all__'
+
+    year = forms.IntegerField(disabled=True)
+    month = forms.IntegerField(disabled=True)        
     
 
 class ExpenseForm(forms.ModelForm):
