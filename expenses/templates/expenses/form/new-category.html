@@ -4,13 +4,11 @@
     
     
     <div class="list-categories">
-            <div class="description-top">
-                <p>Data de Criação</p>
-            </div>
-            <div class="description-itens">
-                <p class="col-1">Data</p>
-                <p class="col-3">Descrição</p>
-            </div>
+        {% for category in categories %}
+           {{ category }}
+        {% endfor %}   
+        
+    </div>
             {% for item in list_item_categories %}
             <div class="line-item">
                 <p class="col-1">{{ item.date|date:"d/m/Y" }}</p>
