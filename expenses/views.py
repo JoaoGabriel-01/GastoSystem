@@ -102,6 +102,7 @@ def home(request,page=None):
   }
   return render(request,"expenses/main.html", context)
   # return render(request,"base.html", context={})
+  
 
 def about(request):
   context = {
